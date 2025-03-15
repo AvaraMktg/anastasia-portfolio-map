@@ -41,8 +41,8 @@ const Navbar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo - moved to the right with more padding */}
-          <Link to="/" className="flex items-center ml-4">
+          {/* Logo - moved further to the right with more padding */}
+          <Link to="/" className="flex items-center ml-8 md:ml-12">
             <span className="text-xl font-serif font-semibold">Anastasia Krasun</span>
           </Link>
 

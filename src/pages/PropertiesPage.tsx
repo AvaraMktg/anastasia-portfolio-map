@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const PropertiesPage = () => {
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [mapboxToken, setMapboxToken] = useState<string>("");
   
   // Fix the filtering logic to correctly handle "active" filter
   const filteredProperties = filter === "all" 
@@ -29,8 +30,8 @@ const PropertiesPage = () => {
             Click on a property to view details or see its location on the map.
           </p>
           
-          {/* Made this sticky with z-10 and a higher top value to account for navbar */}
-          <div className="sticky top-24 z-10 bg-white py-4 border-b border-real-100 mb-8">
+          {/* Make this sticky with higher z-index and fixed positioning to stay under the description */}
+          <div className="sticky top-[80px] z-20 bg-white py-4 border-b border-real-100 mb-8">
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
               <div>
                 <p className="text-sm text-real-600 mb-1">Filter by</p>
@@ -82,11 +83,31 @@ const PropertiesPage = () => {
               <div className="sticky top-32">
                 <h3 className="text-lg font-semibold mb-4">Property Locations</h3>
                 <div className="h-[600px] rounded-lg overflow-hidden shadow-md">
-                  <Map 
-                    properties={filteredProperties}
-                    selectedProperty={selectedProperty}
-                    setSelectedProperty={setSelectedProperty}
-                  />
+                  {/* Add a temporary input field for the Mapbox token if it's not set */}
+                  {!mapboxToken ? (
+                    <div className="h-full flex flex-col items-center justify-center p-6 bg-real-50">
+                      <p className="text-real-700 mb-4 text-center">
+                        Please enter your Mapbox token to load the map:
+                      </p>
+                      <input
+                        type="text"
+                        value={mapboxToken}
+                        onChange={(e) => setMapboxToken(e.target.value)}
+                        placeholder="Enter your Mapbox token here"
+                        className="w-full p-2 border border-real-200 rounded mb-4"
+                      />
+                      <p className="text-xs text-real-500 text-center">
+                        To get a token, create an account at <a href="https://mapbox.com" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">mapbox.com</a> and copy your public token from the dashboard.
+                      </p>
+                    </div>
+                  ) : (
+                    <Map 
+                      properties={filteredProperties}
+                      selectedProperty={selectedProperty}
+                      setSelectedProperty={setSelectedProperty}
+                      mapboxToken={mapboxToken}
+                    />
+                  )}
                 </div>
               </div>
             </div>

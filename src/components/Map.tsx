@@ -1,12 +1,8 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import propertyData, { Property } from '@/lib/propertyData';
+import { Property } from '@/lib/propertyData';
 import { useNavigate } from 'react-router-dom';
-
-// Updated Mapbox token (you should replace this with your own valid token)
-mapboxgl.accessToken = 'pk.eyJ1IjoiYW5hc3Rhc2lha3Jhc3VuIiwiYSI6ImNsbTB3MzJsaTBhYnEzcXA3a3kzZGJqbTQifQ.QJZiILDKbYeQWg9TVh7vJA';
 
 type MapProps = {
   centerOn?: {
@@ -19,6 +15,7 @@ type MapProps = {
   properties?: Property[];
   selectedProperty?: string | null;
   setSelectedProperty?: (id: string | null) => void;
+  mapboxToken?: string;
 };
 
 const Map: React.FC<MapProps> = ({ 
@@ -26,9 +23,10 @@ const Map: React.FC<MapProps> = ({
   zoom = 8, 
   height = 'h-[600px]',
   highlightPropertyId,
-  properties = propertyData,
+  properties = [],
   selectedProperty = null,
-  setSelectedProperty = () => {}
+  setSelectedProperty = () => {},
+  mapboxToken = ''
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -38,11 +36,12 @@ const Map: React.FC<MapProps> = ({
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
 
-  // Create and setup the map
   useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+    if (!mapContainer.current || !mapboxToken || map.current) return;
 
     try {
+      mapboxgl.accessToken = mapboxToken;
+
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
@@ -51,7 +50,6 @@ const Map: React.FC<MapProps> = ({
         projection: 'mercator',
       });
 
-      // Add navigation controls
       map.current.addControl(
         new mapboxgl.NavigationControl({
           visualizePitch: true,
@@ -59,28 +57,23 @@ const Map: React.FC<MapProps> = ({
         'top-right'
       );
 
-      // Map load event
       map.current.on('load', () => {
         console.log('Map loaded successfully');
         setMapLoaded(true);
       });
 
-      // Map error handling
       map.current.on('error', (e) => {
         console.error('Map error:', e);
-        setMapError('Failed to load map. Please try again later.');
+        setMapError('Failed to load map. Please check your Mapbox token and try again.');
       });
 
-      // Cleanup on unmount
       return () => {
         if (map.current) {
           map.current.remove();
           map.current = null;
         }
-        // Clear all markers
         markersRef.current.forEach(marker => marker.remove());
         markersRef.current = [];
-        // Clear all popups
         Object.values(popupsRef.current).forEach(popup => popup.remove());
         popupsRef.current = {};
       };
@@ -88,29 +81,23 @@ const Map: React.FC<MapProps> = ({
       console.error('Error initializing map:', error);
       setMapError('Failed to initialize map. Please check your connection and try again.');
     }
-  }, []);
+  }, [mapboxToken]);
 
-  // Handle property data and markers
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
-    // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());
     markersRef.current = [];
 
-    // Clear existing popups
     Object.values(popupsRef.current).forEach(popup => popup.remove());
     popupsRef.current = {};
 
-    // Create new markers
     properties.forEach(property => {
       const { lat, lng } = property.position;
       
-      // Create marker element
       const markerEl = document.createElement('div');
       markerEl.className = 'cursor-pointer';
       
-      // Style marker based on status and highlight
       if (property.id === highlightPropertyId || property.id === selectedProperty) {
         markerEl.innerHTML = `
           <div class="relative flex items-center justify-center">
@@ -132,7 +119,6 @@ const Map: React.FC<MapProps> = ({
         `;
       }
 
-      // Create the popup
       const popup = new mapboxgl.Popup({
         offset: 25,
         closeButton: true,
@@ -164,21 +150,16 @@ const Map: React.FC<MapProps> = ({
       `);
 
       try {
-        // Create marker
         const marker = new mapboxgl.Marker(markerEl)
           .setLngLat([lng, lat])
           .setPopup(popup)
           .addTo(map.current!);
 
-        // Add marker to the ref array
         markersRef.current.push(marker);
         
-        // Save popup reference
         popupsRef.current[property.id] = popup;
 
-        // Add event listeners
         markerEl.addEventListener('click', () => {
-          // Close all other popups
           Object.values(popupsRef.current).forEach(p => {
             if (p !== popup) p.remove();
           });
@@ -187,7 +168,6 @@ const Map: React.FC<MapProps> = ({
           setSelectedProperty(property.id);
         });
 
-        // Navigate to property detail page when clicking the button in popup
         popup._content.querySelector('button')?.addEventListener('click', (e) => {
           e.preventDefault();
           navigate(`/property/${property.id}`);
@@ -197,7 +177,6 @@ const Map: React.FC<MapProps> = ({
       }
     });
 
-    // If a property is highlighted, show its popup
     if (selectedProperty && popupsRef.current[selectedProperty]) {
       try {
         popupsRef.current[selectedProperty].addTo(map.current);
@@ -206,7 +185,6 @@ const Map: React.FC<MapProps> = ({
       }
     }
 
-    // Center the map on the highlighted property
     if (centerOn) {
       try {
         map.current.flyTo({
@@ -225,10 +203,8 @@ const Map: React.FC<MapProps> = ({
     <div className={`relative w-full ${height} rounded-lg overflow-hidden shadow-md`}>
       <div ref={mapContainer} className="absolute inset-0" />
       
-      {/* Subtle gradient overlay to soften the map appearance */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/10 rounded-lg" />
       
-      {/* Map loading indicator */}
       {!mapLoaded && !mapError && (
         <div className="absolute inset-0 flex items-center justify-center bg-real-100/50 backdrop-blur-sm">
           <div className="flex flex-col items-center">
@@ -238,7 +214,6 @@ const Map: React.FC<MapProps> = ({
         </div>
       )}
 
-      {/* Map error state */}
       {mapError && (
         <div className="absolute inset-0 flex items-center justify-center bg-real-100/50 backdrop-blur-sm">
           <div className="flex flex-col items-center p-6 max-w-md text-center">
@@ -249,18 +224,16 @@ const Map: React.FC<MapProps> = ({
             </div>
             <p className="text-real-950 font-medium mb-2">Unable to Load Map</p>
             <p className="text-real-600 text-sm mb-4">{mapError}</p>
-            <p className="text-real-600 text-xs">If this issue persists, please contact support or try using a different browser.</p>
+            <p className="text-real-600 text-xs">Please check your Mapbox token and try again. If this issue persists, please contact support.</p>
           </div>
         </div>
       )}
 
-      {/* Property count badge */}
       <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-md text-sm">
         <span className="font-medium">{properties.length}</span>
         <span className="text-real-600 ml-1">Properties</span>
       </div>
 
-      {/* Map legend */}
       <div className="absolute bottom-3 left-3 z-10 bg-white/90 backdrop-blur-sm p-2 rounded-md shadow-md text-xs">
         <div className="flex items-center gap-2 mb-1">
           <div className="w-3 h-3 bg-real-800 rounded-full"></div>
