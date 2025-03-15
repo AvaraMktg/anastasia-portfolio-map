@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { properties } from "@/lib/propertyData";
+import propertyData from "@/lib/propertyData";
 import Map from "@/components/Map";
 import Gallery from "@/components/Gallery";
 import { BedIcon, BathIcon, Square, Calendar, Tag, Home } from "lucide-react";
@@ -12,7 +12,7 @@ const PropertyDetail = () => {
   const [property, setProperty] = useState<any>(null);
   
   useEffect(() => {
-    const foundProperty = properties.find(p => p.id === id);
+    const foundProperty = propertyData.find(p => p.id === id);
     if (foundProperty) {
       setProperty(foundProperty);
       window.scrollTo(0, 0);

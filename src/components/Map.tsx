@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import propertyData from '@/lib/propertyData';
+import propertyData, { Property } from '@/lib/propertyData';
 import { useNavigate } from 'react-router-dom';
 
 // In a real production app, this would be stored securely
@@ -17,13 +17,19 @@ type MapProps = {
   zoom?: number;
   height?: string;
   highlightPropertyId?: string;
+  properties?: Property[];
+  selectedProperty?: string | null;
+  setSelectedProperty?: (id: string | null) => void;
 };
 
 const Map: React.FC<MapProps> = ({ 
   centerOn, 
   zoom = 8, 
   height = 'h-[600px]',
-  highlightPropertyId
+  highlightPropertyId,
+  properties = propertyData,
+  selectedProperty = null,
+  setSelectedProperty = () => {}
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -85,7 +91,7 @@ const Map: React.FC<MapProps> = ({
     popupsRef.current = {};
 
     // Create new markers
-    propertyData.forEach(property => {
+    properties.forEach(property => {
       const { lat, lng } = property.position;
       
       // Create marker element
@@ -93,7 +99,7 @@ const Map: React.FC<MapProps> = ({
       markerEl.className = 'cursor-pointer';
       
       // Style marker based on status and highlight
-      if (property.id === highlightPropertyId) {
+      if (property.id === highlightPropertyId || property.id === selectedProperty) {
         markerEl.innerHTML = `
           <div class="relative flex items-center justify-center">
             <div class="absolute w-8 h-8 bg-gold-400 rounded-full animate-ping opacity-75"></div>
@@ -165,6 +171,7 @@ const Map: React.FC<MapProps> = ({
         });
 
         popup.addTo(map.current!);
+        setSelectedProperty(property.id);
       });
 
       // Navigate to property detail page when clicking the button in popup
@@ -175,8 +182,8 @@ const Map: React.FC<MapProps> = ({
     });
 
     // If a property is highlighted, show its popup
-    if (highlightPropertyId && popupsRef.current[highlightPropertyId]) {
-      popupsRef.current[highlightPropertyId].addTo(map.current);
+    if (selectedProperty && popupsRef.current[selectedProperty]) {
+      popupsRef.current[selectedProperty].addTo(map.current);
     }
 
     // Center the map on the highlighted property
@@ -188,7 +195,7 @@ const Map: React.FC<MapProps> = ({
         duration: 1000
       });
     }
-  }, [mapLoaded, highlightPropertyId, centerOn, navigate]);
+  }, [mapLoaded, highlightPropertyId, selectedProperty, centerOn, navigate, properties, setSelectedProperty]);
 
   return (
     <div className={`relative w-full ${height} rounded-lg overflow-hidden shadow-md`}>
@@ -209,7 +216,7 @@ const Map: React.FC<MapProps> = ({
 
       {/* Property count badge */}
       <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-md text-sm">
-        <span className="font-medium">{propertyData.length}</span>
+        <span className="font-medium">{properties.length}</span>
         <span className="text-real-600 ml-1">Properties</span>
       </div>
 

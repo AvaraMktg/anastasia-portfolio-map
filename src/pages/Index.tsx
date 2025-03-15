@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import ContactForm from "@/components/ContactForm";
 import PropertyCard from "@/components/PropertyCard";
 import Map from "@/components/Map";
-import { properties } from "@/lib/propertyData";
+import propertyData from "@/lib/propertyData";
 import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react";
 
 const Index = () => {
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
-  const featuredProperties = properties.filter(property => property.status !== "sold").slice(0, 3);
+  const featuredProperties = propertyData.filter(property => property.status !== "sold").slice(0, 3);
 
   return (
     <main className="bg-white">
@@ -56,7 +56,7 @@ const Index = () => {
           
           <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-lg">
             <Map 
-              properties={properties}
+              properties={propertyData}
               selectedProperty={selectedProperty}
               setSelectedProperty={setSelectedProperty}
             />

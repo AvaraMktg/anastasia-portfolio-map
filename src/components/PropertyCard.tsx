@@ -7,9 +7,16 @@ import { MapPin } from 'lucide-react';
 interface PropertyCardProps {
   property: Property;
   featured?: boolean;
+  onHover?: () => void;
+  onLeave?: () => void;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ property, featured = false }) => {
+const PropertyCard: React.FC<PropertyCardProps> = ({ 
+  property, 
+  featured = false,
+  onHover,
+  onLeave
+}) => {
   const {
     id,
     title,
@@ -54,7 +61,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, featured = false 
 
   if (featured) {
     return (
-      <Link to={`/property/${id}`} className="featured-property-card group block">
+      <Link 
+        to={`/property/${id}`} 
+        className="featured-property-card group block"
+        onMouseEnter={onHover}
+        onMouseLeave={onLeave}
+      >
         <div className="absolute top-4 left-4 z-20">
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${getBadgeStyle()}`}>
             {getStatusText()}
@@ -104,7 +116,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, featured = false 
   }
 
   return (
-    <Link to={`/property/${id}`} className="property-card group block card-hover">
+    <Link 
+      to={`/property/${id}`} 
+      className="property-card group block card-hover"
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+    >
       <div className="relative">
         <div className="absolute top-3 left-3 z-10">
           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getBadgeStyle()}`}>

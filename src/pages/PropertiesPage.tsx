@@ -2,7 +2,7 @@
 import { useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import Map from "@/components/Map";
-import { properties } from "@/lib/propertyData";
+import propertyData from "@/lib/propertyData";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const PropertiesPage = () => {
@@ -10,8 +10,8 @@ const PropertiesPage = () => {
   const [filter, setFilter] = useState<string>("all");
   
   const filteredProperties = filter === "all" 
-    ? properties 
-    : properties.filter(property => property.status === filter);
+    ? propertyData 
+    : propertyData.filter(property => property.status === filter);
 
   return (
     <main className="bg-white">

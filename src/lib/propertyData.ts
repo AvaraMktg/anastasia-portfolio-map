@@ -420,3 +420,4 @@ const propertyData: Property[] = [
 ];
 
 export default propertyData;
+export const properties = propertyData;
