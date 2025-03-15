@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import ContactForm from "@/components/ContactForm";
 import PropertyCard from "@/components/PropertyCard";
-import Map from "@/components/Map";
+import Map from "@/components/map"; // Updated import path to match the new folder structure
 import propertyData from "@/lib/propertyData";
 import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react";
 
