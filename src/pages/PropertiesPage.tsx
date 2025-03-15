@@ -13,7 +13,7 @@ const PropertiesPage = () => {
   const filteredProperties = filter === "all" 
     ? propertyData 
     : propertyData.filter(property => {
-        if (filter === "active") return property.status === "active";
+        if (filter === "active") return property.status === "forSale";
         return property.status === filter;
       });
 
