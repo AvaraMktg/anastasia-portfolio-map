@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import propertyData from "@/lib/propertyData";
-import Map from "@/components/Map";
+import Map from "@/components/map"; // Update import path to use the new location
 import Gallery from "@/components/Gallery";
 import { BedIcon, BathIcon, Square, Calendar, Tag, Home } from "lucide-react";
 import { Separator } from "@/components/ui/separator";

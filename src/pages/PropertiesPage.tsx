@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
-import Map from "@/components/Map";
+import Map from "@/components/map"; // Update import path to use the new location
 import propertyData from "@/lib/propertyData";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
