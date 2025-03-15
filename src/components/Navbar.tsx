@@ -41,8 +41,8 @@ const Navbar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
+          {/* Logo - moved to the right with more padding */}
+          <Link to="/" className="flex items-center ml-4">
             <span className="text-xl font-serif font-semibold">Anastasia Krasun</span>
           </Link>
 
@@ -61,16 +61,14 @@ const Navbar: React.FC = () => {
               Properties
             </Link>
             <Link 
-              to="/about" 
-              className={`nav-link ${isActive('/about') ? 'active' : ''}`}
+              to="/#about" 
+              className={`nav-link ${location.pathname === '/' && location.hash === '#about' ? 'active' : ''}`}
             >
               About
             </Link>
             <Link 
-              to="/contact" 
-              className={`nav-link ${
-                isActive('/contact') ? 'active' : ''
-              }`}
+              to="/#contact" 
+              className={`nav-link ${location.pathname === '/' && location.hash === '#contact' ? 'active' : ''}`}
             >
               Contact
             </Link>
@@ -121,13 +119,13 @@ const Navbar: React.FC = () => {
             Properties
           </Link>
           <Link
-            to="/about"
+            to="/#about"
             className="block py-2 text-base font-medium"
           >
             About
           </Link>
           <Link
-            to="/contact"
+            to="/#contact"
             className="block py-2 text-base font-medium"
           >
             Contact

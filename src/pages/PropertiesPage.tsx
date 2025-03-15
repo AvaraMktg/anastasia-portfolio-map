@@ -9,9 +9,13 @@ const PropertiesPage = () => {
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
   
+  // Fix the filtering logic to correctly handle "active" filter
   const filteredProperties = filter === "all" 
     ? propertyData 
-    : propertyData.filter(property => property.status === filter);
+    : propertyData.filter(property => {
+        if (filter === "active") return property.status === "active";
+        return property.status === filter;
+      });
 
   return (
     <main className="bg-white">
@@ -25,7 +29,8 @@ const PropertiesPage = () => {
             Click on a property to view details or see its location on the map.
           </p>
           
-          <div className="sticky top-20 z-10 bg-white py-4 border-b border-real-100 mb-8">
+          {/* Made this sticky with z-10 and a higher top value to account for navbar */}
+          <div className="sticky top-24 z-10 bg-white py-4 border-b border-real-100 mb-8">
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
               <div>
                 <p className="text-sm text-real-600 mb-1">Filter by</p>
