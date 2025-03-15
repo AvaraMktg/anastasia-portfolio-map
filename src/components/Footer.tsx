@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Mail, Phone } from 'lucide-react';
+import { MapPin, Mail, Phone, Instagram } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -35,6 +35,17 @@ const Footer: React.FC = () => {
                 className="text-real-300 hover:text-white transition-colors text-sm"
               >
                 anastasia@relatedisg.com
+              </a>
+            </li>
+            <li className="flex items-center">
+              <Instagram className="h-5 w-5 text-gold-400 mr-2" />
+              <a 
+                href="https://www.instagram.com/anastasiakrasun?igsh=anFwOTN1bXhnY3A1" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-real-300 hover:text-white transition-colors text-sm"
+              >
+                @anastasiakrasun
               </a>
             </li>
           </ul>
