@@ -1,59 +1,65 @@
 
-import mapboxgl from 'mapbox-gl';
+import { GoogleMap } from '@react-google-maps/api';
 
-export const initializeMap = (
-  mapContainer: HTMLDivElement,
-  mapboxToken: string,
-  centerCoordinates?: { lng: number; lat: number },
-  zoom: number = 8
-): mapboxgl.Map => {
-  mapboxgl.accessToken = mapboxToken;
+// Default map style
+export const mapContainerStyle = {
+  width: '100%',
+  height: '100%',
+};
 
-  return new mapboxgl.Map({
-    container: mapContainer,
-    style: 'mapbox://styles/mapbox/light-v11',
-    center: centerCoordinates ? [centerCoordinates.lng, centerCoordinates.lat] : [-80.2, 26.2], // Default to South Florida
+// Default map options
+export const defaultMapOptions = {
+  disableDefaultUI: false,
+  zoomControl: true,
+  mapTypeControl: false,
+  streetViewControl: false,
+  fullscreenControl: true,
+};
+
+// Convert coordinates from our existing format to Google Maps format
+export const toGoogleLatLng = (coordinates: { lng: number; lat: number }) => {
+  return {
+    lat: coordinates.lat,
+    lng: coordinates.lng,
+  };
+};
+
+// Initialize the map (now just returns options, actual initialization is in the component)
+export const getMapOptions = (
+  zoom: number = 8,
+  centerCoordinates?: { lng: number; lat: number }
+) => {
+  return {
+    ...defaultMapOptions,
     zoom: zoom,
-    projection: 'mercator',
-  });
+    center: centerCoordinates 
+      ? toGoogleLatLng(centerCoordinates) 
+      : { lat: 26.2, lng: -80.2 }, // Default to South Florida
+  };
 };
 
-export const addNavigationControl = (map: mapboxgl.Map): void => {
-  map.addControl(
-    new mapboxgl.NavigationControl({
-      visualizePitch: true,
-    }),
-    'top-right'
-  );
-};
-
+// Function to handle map movement
 export const flyToLocation = (
-  map: mapboxgl.Map,
+  map: google.maps.Map | null,
   coordinates: { lng: number; lat: number },
   zoom: number = 15
 ): void => {
+  if (!map) return;
+  
   try {
-    map.flyTo({
-      center: [coordinates.lng, coordinates.lat],
-      zoom: zoom,
-      essential: true,
-      duration: 1000
-    });
+    map.panTo(toGoogleLatLng(coordinates));
+    map.setZoom(zoom);
   } catch (error) {
     console.error('Error centering map:', error);
   }
 };
 
+// Clean up resources
 export const cleanupMapResources = (
-  map: mapboxgl.Map | null,
-  markers: mapboxgl.Marker[],
-  popups: {[key: string]: mapboxgl.Popup}
+  map: google.maps.Map | null,
+  markers: google.maps.Marker[]
 ): void => {
-  if (map) {
-    map.remove();
+  if (markers && markers.length > 0) {
+    markers.forEach(marker => marker.setMap(null));
   }
-  
-  markers.forEach(marker => marker.remove());
-  
-  Object.values(popups).forEach(popup => popup.remove());
 };

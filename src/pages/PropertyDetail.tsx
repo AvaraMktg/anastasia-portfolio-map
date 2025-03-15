@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import propertyData from "@/lib/propertyData";
-import Map from "@/components/map"; // Update import path to use the new location
+import Map from "@/components/map";
 import Gallery from "@/components/Gallery";
 import { BedIcon, BathIcon, Square, Calendar, Tag, Home } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -32,13 +31,11 @@ const PropertyDetail = () => {
     );
   }
 
-  // Format price for display
   const formattedPrice = property.price.replace("per month", "").trim();
   
   return (
     <main className="bg-white pb-16">
       <div className="container mx-auto px-4">
-        {/* Breadcrumb */}
         <div className="py-4">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 md:space-x-3">
@@ -67,7 +64,6 @@ const PropertyDetail = () => {
           </nav>
         </div>
         
-        {/* Property Header */}
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
@@ -91,16 +87,12 @@ const PropertyDetail = () => {
           </div>
         </div>
         
-        {/* Property Gallery */}
         <div className="mb-12">
           <Gallery images={property.images} />
         </div>
         
-        {/* Property Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Key Features */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
               <div className="bg-real-50 p-4 rounded-lg flex flex-col items-center">
                 <BedIcon className="h-6 w-6 text-gold-500 mb-2" />
@@ -128,7 +120,6 @@ const PropertyDetail = () => {
               )}
             </div>
             
-            {/* Description */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-real-950 mb-4">About This Home</h2>
               <div className="prose max-w-none text-real-700">
@@ -136,7 +127,6 @@ const PropertyDetail = () => {
               </div>
             </div>
             
-            {/* Features */}
             {property.features && property.features.length > 0 && (
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-real-950 mb-4">Features</h2>
@@ -151,7 +141,6 @@ const PropertyDetail = () => {
               </div>
             )}
             
-            {/* Additional details for sold properties */}
             {property.status === 'sold' && (
               <div className="mb-8 bg-real-50 p-6 rounded-lg">
                 <h2 className="text-xl font-bold text-real-950 mb-4">Sale Information</h2>
@@ -185,10 +174,8 @@ const PropertyDetail = () => {
             )}
           </div>
           
-          {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 space-y-6">
-              {/* Map */}
               <div className="bg-white border border-real-100 rounded-lg overflow-hidden shadow-md">
                 <h3 className="text-lg font-semibold p-4 border-b border-real-100">Location</h3>
                 <div className="h-[300px]">
@@ -201,7 +188,6 @@ const PropertyDetail = () => {
                 </div>
               </div>
               
-              {/* Listing Agent */}
               <div className="bg-white border border-real-100 rounded-lg overflow-hidden shadow-md p-6">
                 <h3 className="text-lg font-semibold mb-4">Listed By</h3>
                 <div className="flex items-center gap-4 mb-4">

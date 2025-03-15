@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import ContactForm from "@/components/ContactForm";
 import PropertyCard from "@/components/PropertyCard";
-import Map from "@/components/map"; // Updated import path to match the new folder structure
+import Map from "@/components/map"; // Updated import path is already correct
 import propertyData from "@/lib/propertyData";
 import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react";
 
@@ -59,6 +59,7 @@ const Index = () => {
               properties={propertyData}
               selectedProperty={selectedProperty}
               setSelectedProperty={setSelectedProperty}
+              // We don't pass the googleMapsApiKey here, since the Map component handles missing key with its own input
             />
           </div>
         </div>

@@ -1,16 +1,14 @@
-
 import { useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
-import Map from "@/components/map"; // Update import path to use the new location
+import Map from "@/components/map";
 import propertyData from "@/lib/propertyData";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const PropertiesPage = () => {
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
-  const [mapboxToken, setMapboxToken] = useState<string>("");
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>("");
   
-  // Fix the filtering logic to correctly handle "active" filter
   const filteredProperties = filter === "all" 
     ? propertyData 
     : propertyData.filter(property => {
@@ -30,7 +28,6 @@ const PropertiesPage = () => {
             Click on a property to view details or see its location on the map.
           </p>
           
-          {/* Make this sticky with higher z-index and fixed positioning to stay under the description */}
           <div className="sticky top-[80px] z-20 bg-white py-4 border-b border-real-100 mb-8">
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
               <div>
@@ -83,21 +80,20 @@ const PropertiesPage = () => {
               <div className="sticky top-32">
                 <h3 className="text-lg font-semibold mb-4">Property Locations</h3>
                 <div className="h-[600px] rounded-lg overflow-hidden shadow-md">
-                  {/* Add a temporary input field for the Mapbox token if it's not set */}
-                  {!mapboxToken ? (
+                  {!googleMapsApiKey ? (
                     <div className="h-full flex flex-col items-center justify-center p-6 bg-real-50">
                       <p className="text-real-700 mb-4 text-center">
-                        Please enter your Mapbox token to load the map:
+                        Please enter your Google Maps API key to load the map:
                       </p>
                       <input
                         type="text"
-                        value={mapboxToken}
-                        onChange={(e) => setMapboxToken(e.target.value)}
-                        placeholder="Enter your Mapbox token here"
+                        value={googleMapsApiKey}
+                        onChange={(e) => setGoogleMapsApiKey(e.target.value)}
+                        placeholder="Enter your Google Maps API key here"
                         className="w-full p-2 border border-real-200 rounded mb-4"
                       />
                       <p className="text-xs text-real-500 text-center">
-                        To get a token, create an account at <a href="https://mapbox.com" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">mapbox.com</a> and copy your public token from the dashboard.
+                        To get an API key, create an account at <a href="https://cloud.google.com/maps-platform/" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">Google Cloud Platform</a> and enable the Maps JavaScript API.
                       </p>
                     </div>
                   ) : (
@@ -105,7 +101,7 @@ const PropertiesPage = () => {
                       properties={filteredProperties}
                       selectedProperty={selectedProperty}
                       setSelectedProperty={setSelectedProperty}
-                      mapboxToken={mapboxToken}
+                      googleMapsApiKey={googleMapsApiKey}
                     />
                   )}
                 </div>
