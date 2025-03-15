@@ -1,12 +1,4 @@
 
-import { GoogleMap } from '@react-google-maps/api';
-
-// Default map style
-export const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-};
-
 // Default map options
 export const defaultMapOptions = {
   disableDefaultUI: false,
@@ -24,7 +16,7 @@ export const toGoogleLatLng = (coordinates: { lng: number; lat: number }) => {
   };
 };
 
-// Initialize the map (now just returns options, actual initialization is in the component)
+// Get the map options for initialization
 export const getMapOptions = (
   zoom: number = 8,
   centerCoordinates?: { lng: number; lat: number }

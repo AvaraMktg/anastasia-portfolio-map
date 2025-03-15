@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState } from 'react';
-import { Marker, InfoWindow } from '@react-google-maps/api';
 import { Property } from '@/lib/propertyData';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,10 +21,15 @@ const MapMarker: React.FC<MapMarkerProps> = ({
   const navigate = useNavigate();
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
+  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(null);
   
   const position = {
     lat: property.position.lat,
     lng: property.position.lng
+  };
+
+  const handleInfoWindowClose = () => {
+    setInfoWindowOpen(false);
   };
 
   const toggleInfoWindow = () => {
@@ -40,27 +44,69 @@ const MapMarker: React.FC<MapMarkerProps> = ({
   useEffect(() => {
     if (!map) return;
 
-    // Create the marker
+    // Create marker
     const newMarker = new google.maps.Marker({
       position,
       map,
       title: property.title,
-      icon: isHighlighted ? {
+      animation: isHighlighted ? google.maps.Animation.BOUNCE : undefined
+    });
+
+    // Create custom icon if highlighted
+    if (isHighlighted) {
+      newMarker.setIcon({
         path: google.maps.SymbolPath.CIRCLE,
         scale: 10,
         fillColor: '#DAA520', // Gold color
         fillOpacity: 1,
         strokeColor: '#DAA520',
         strokeWeight: 2,
-      } : undefined,
-      animation: isHighlighted ? google.maps.Animation.BOUNCE : undefined
+      });
+    }
+    
+    // Create info window
+    const newInfoWindow = new google.maps.InfoWindow({
+      content: `
+        <div class="property-popup-content p-0" style="max-width: 250px;">
+          <div class="relative">
+            <img 
+              src="${property.mainImage}" 
+              alt="${property.title}" 
+              style="width: 100%; height: 120px; object-fit: cover;"
+            />
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 8px;">
+              <div style="color: white; font-weight: 500;">${property.price}</div>
+            </div>
+          </div>
+          <div style="padding: 12px;">
+            <h3 style="font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;">${property.title}</h3>
+            <p style="font-size: 12px; color: #666; margin-bottom: 8px;">${property.address}</p>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+              <span>${property.beds} Beds</span>
+              <span>•</span>
+              <span>${property.baths} Baths</span>
+              ${property.sqft ? `
+                <span>•</span>
+                <span>${property.sqft} Sq Ft</span>
+              ` : ''}
+            </div>
+            <button 
+              id="view-details-${property.id}"
+              style="margin-top: 12px; width: 100%; background-color: #1a202c; color: white; padding: 6px 0; font-size: 12px; border-radius: 6px; cursor: pointer; border: none;"
+            >
+              View Details
+            </button>
+          </div>
+        </div>
+      `
     });
     
-    // Add click event
+    // Add click event to marker
     newMarker.addListener('click', toggleInfoWindow);
     
     // Save marker reference
     setMarker(newMarker);
+    setInfoWindow(newInfoWindow);
     markersRef.current.push(newMarker);
     
     return () => {
@@ -75,52 +121,38 @@ const MapMarker: React.FC<MapMarkerProps> = ({
     };
   }, [map, isHighlighted]);
 
-  return (
-    <>
-      {marker && infoWindowOpen && (
-        <InfoWindow
-          position={position}
-          onCloseClick={() => setInfoWindowOpen(false)}
-          anchor={marker}
-        >
-          <div className="property-popup-content p-0" style={{ maxWidth: '250px' }}>
-            <div className="relative">
-              <img 
-                src={property.mainImage} 
-                alt={property.title} 
-                className="w-full h-32 object-cover"
-                style={{ width: '100%', height: '120px', objectFit: 'cover' }}
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                <div className="text-white font-medium">{property.price}</div>
-              </div>
-            </div>
-            <div className="p-3">
-              <h3 className="font-medium text-sm line-clamp-1 mb-1">{property.title}</h3>
-              <p className="text-xs text-real-600 mb-2">{property.address}</p>
-              <div className="flex items-center gap-2 text-xs">
-                <span>{property.beds} Beds</span>
-                <span>•</span>
-                <span>{property.baths} Baths</span>
-                {property.sqft && (
-                  <>
-                    <span>•</span>
-                    <span>{property.sqft} Sq Ft</span>
-                  </>
-                )}
-              </div>
-              <button 
-                onClick={handleViewDetails}
-                className="mt-3 w-full bg-real-900 text-white py-1.5 text-xs rounded-md hover:bg-real-800 transition-colors"
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        </InfoWindow>
-      )}
-    </>
-  );
+  // Handle info window open/close
+  useEffect(() => {
+    if (marker && infoWindow) {
+      if (infoWindowOpen) {
+        infoWindow.open({
+          anchor: marker,
+          map
+        });
+        
+        // Add event listener to the view details button
+        const viewDetailsButton = document.getElementById(`view-details-${property.id}`);
+        if (viewDetailsButton) {
+          viewDetailsButton.addEventListener('click', handleViewDetails);
+        }
+        
+        // Add event listener to close info window
+        google.maps.event.addListenerOnce(infoWindow, 'closeclick', handleInfoWindowClose);
+      } else {
+        infoWindow.close();
+      }
+    }
+    
+    return () => {
+      // Clean up event listeners
+      const viewDetailsButton = document.getElementById(`view-details-${property.id}`);
+      if (viewDetailsButton) {
+        viewDetailsButton.removeEventListener('click', handleViewDetails);
+      }
+    };
+  }, [infoWindowOpen, marker, infoWindow, map]);
+
+  return null; // Rendering is handled by the Google Maps API
 };
 
 export default MapMarker;
