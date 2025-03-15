@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-real-950 text-white pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {/* Contact Information */}
           <div>
             <h3 className="text-lg font-medium mb-4">Anastasia Krasun Voropaieva</h3>
@@ -76,53 +76,6 @@ const Footer: React.FC = () => {
                   className="text-real-300 hover:text-white transition-colors text-sm"
                 >
                   Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Property Types */}
-          <div>
-            <h3 className="text-lg font-medium mb-4">Property Types</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link 
-                  to="/properties" 
-                  className="text-real-300 hover:text-white transition-colors text-sm"
-                >
-                  Condos
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/properties" 
-                  className="text-real-300 hover:text-white transition-colors text-sm"
-                >
-                  Houses
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/properties" 
-                  className="text-real-300 hover:text-white transition-colors text-sm"
-                >
-                  Commercial Properties
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/properties" 
-                  className="text-real-300 hover:text-white transition-colors text-sm"
-                >
-                  Investment Properties
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/properties" 
-                  className="text-real-300 hover:text-white transition-colors text-sm"
-                >
-                  Luxury Homes
                 </Link>
               </li>
             </ul>

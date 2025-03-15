@@ -1,9 +1,7 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import ContactForm from "@/components/ContactForm";
 import PropertyCard from "@/components/PropertyCard";
-import Map from "@/components/map"; // Updated import path is already correct
 import propertyData from "@/lib/propertyData";
 import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react";
 
@@ -44,27 +42,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Properties Map Section */}
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-real-950 mb-2 text-center">
-            Discover Properties Across South Florida
-          </h2>
-          <p className="text-real-700 text-center mb-12 max-w-2xl mx-auto">
-            Explore Anastasia's exclusive listings on the interactive map. Click on a pin to view property details.
-          </p>
-          
-          <div className="w-full h-[500px] rounded-lg overflow-hidden shadow-lg">
-            <Map 
-              properties={propertyData}
-              selectedProperty={selectedProperty}
-              setSelectedProperty={setSelectedProperty}
-              // We don't pass the googleMapsApiKey here, since the Map component handles missing key with its own input
-            />
-          </div>
-        </div>
-      </section>
-
       {/* Featured Properties Section */}
       <section className="bg-real-50 py-16">
         <div className="container mx-auto px-4">
@@ -79,7 +56,7 @@ const Index = () => {
             {featuredProperties.map((property) => (
               <PropertyCard 
                 key={property.id} 
-                property={property} 
+                property={property}
                 onHover={() => setSelectedProperty(property.id)}
                 onLeave={() => setSelectedProperty(null)}
               />
