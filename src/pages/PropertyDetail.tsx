@@ -197,7 +197,7 @@ const PropertyDetail = () => {
                     className="w-16 h-16 rounded-full object-cover"
                   />
                   <div>
-                    <p className="font-semibold">Anastasia Krasun Voropaieva</p>
+                    <p className="font-semibold">Anastasia Krasun</p>
                     <p className="text-real-600 text-sm">Related ISG Realty, LLC.</p>
                   </div>
                 </div>

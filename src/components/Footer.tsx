@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
         {/* Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div>
-            <h3 className="text-2xl font-medium mb-4">Anastasia Krasun Voropaieva</h3>
+            <h3 className="text-2xl font-medium mb-4">Anastasia Krasun</h3>
             <p className="mb-6 text-real-300 text-base max-w-md">
               Premier Florida realtor with RelatedISG Realty, bringing international experience and market expertise to South Florida real estate.
             </p>
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
 
         {/* Copyright */}
         <div className="text-center text-real-400 text-sm">
-          <p>&copy; {currentYear} Anastasia Krasun Voropaieva. All rights reserved.</p>
+          <p>&copy; {currentYear} Anastasia Krasun. All rights reserved.</p>
           <p className="mt-1 text-xs">
             Licensed Real Estate Agent, License #3524077
           </p>
