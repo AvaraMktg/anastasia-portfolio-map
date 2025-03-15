@@ -19,7 +19,7 @@ const Index = () => {
               Find Your Dream Home in South Florida
             </h1>
             <p className="text-xl text-real-700 mb-8">
-              Expert real estate services with Anastasia Krasun Voropaieva, a premier Florida realtor with international expertise.
+              Expert real estate services with Anastasia Krasun, a premier Florida realtor with international expertise.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/properties" className="btn-primary">
@@ -34,7 +34,7 @@ const Index = () => {
             <div className="rounded-lg overflow-hidden border-4 border-white shadow-xl">
               <img
                 src="https://imagescdn.homes.com/i2/1sAclGLz0A2IVClXD5yTlr_jX0yrBNHXiSpFbjq-cyQ/117/anastasia-krasun-voropaieva.jpg?p=1"
-                alt="Anastasia Krasun Voropaieva"
+                alt="Anastasia Krasun"
                 className="w-full h-auto object-cover"
               />
             </div>
